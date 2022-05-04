@@ -61,7 +61,6 @@ def getCNF(readFile):
         dcon = []
         for con in rdic[arg]:
             if len(con) == 1 and not isend(con[0]):
-                print(arg, con)
                 if not arg in edic:
                     edic[arg] = []
                 edic[arg].append(con[0])
