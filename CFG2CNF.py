@@ -13,7 +13,6 @@ def split2dic(rlist):
         for i in content:
             tmp = i.split()
             rdic[arg].append(tmp)
-    print(rdic)
 
 
 def isend(arg):
@@ -26,9 +25,7 @@ def isend(arg):
 def getCNF(readFile):
     rFile = open(readFile, "r")
     rlist = rFile.read().splitlines()
-    print(rlist)
     split2dic(rlist)
-    print(rdic)
     global edic
     edic = {}
     global cnt
@@ -75,9 +72,10 @@ def getCNF(readFile):
     adic = {}
 
     for arg in rdic.keys():
+        dcon = []
         for con in rdic[arg]:
             if len(con) > 2:
-                rdic[arg].remove(con)
+                dcon.append(con)
                 while len(con) > 2:
                     narg = f"tmp{cnt}"
                     cnt = cnt+1
@@ -86,6 +84,8 @@ def getCNF(readFile):
                     con = con[0:-2]+[narg]
                 else:
                     rdic[arg].append(con)
+        for con in dcon:
+            rdic[arg].remove(con)
 
     for arg in adic.keys():
         rdic[arg] = adic[arg]
