@@ -1,0 +1,32 @@
+S -> NP VP 
+S -> Aux tmp0 
+S -> Verb NP 
+S -> Verb PP 
+S -> VP PP 
+S -> Verb tmp1 
+S -> 'Book' 
+NP -> Det Nominal 
+NP -> 'Houston' 
+Nominal -> Nominal Noun 
+Nominal -> Nominal PP 
+Nominal -> 'flight' 
+VP -> Verb NP 
+VP -> Verb PP 
+VP -> VP PP 
+VP -> Verb tmp1 
+VP -> 'Book' 
+PP -> Preposition NP 
+Verb -> 'Book' 
+Det -> 'the' 
+Noun -> 'flight' 
+Preposition -> 'through' 
+Proper-Noun -> 'Houston' 
+S0 -> NP VP 
+S0 -> Aux tmp0 
+S0 -> Verb NP 
+S0 -> Verb PP 
+S0 -> VP PP 
+S0 -> Verb tmp1 
+S0 -> 'Book' 
+tmp0 -> NP VP 
+tmp1 -> NP PP 

@@ -1,0 +1,13 @@
+S -> NP VP|Aux NP VP|VP
+NP -> Pronoun|Proper-Noun|Det Nominal
+Nominal -> Noun|Nominal Noun|Nominal PP
+VP -> Verb NP | Verb NP PP
+VP -> Verb
+VP -> Verb PP
+VP -> VP PP
+PP -> Preposition NP
+Verb -> 'Book'
+Det -> 'the'
+Noun -> 'flight'
+Preposition -> 'through'
+Proper-Noun -> 'Houston'
