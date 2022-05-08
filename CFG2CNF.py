@@ -93,14 +93,24 @@ def getCNF(readFile):
         if not arg in flag.keys():
             equal(arg)
 
+    tdic={}
     wFile = open("new_grammar.txt", "w")
+
     for arg in rdic.keys():
         for con in rdic[arg]:
             res = f"{arg} -> "
+            index = ""
             for item in con:
                 res = res+f"{item} "
+                index = index + item + " "
+            index = index.strip()
             print(res, file=wFile)
-    return rdic
+            if index in tdic.keys():
+                tdic[index].append(arg)
+            else:
+                tdic[index]=[arg]
+
+    return tdic
 
 
 def equal(arg):
