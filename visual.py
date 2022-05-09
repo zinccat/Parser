@@ -5,8 +5,8 @@ def generate_tree(node):
     input:parse_table中的node
     """
     if node.child2 is None:
-        return f"[{node.parent} '{node.child1}']"
-    return f"[{node.parent} {generate_tree(node.child1)} {generate_tree(node.child2)}]"
+        return f"({node.parent} '{node.child1}')"
+    return f"({node.parent} {generate_tree(node.child1)} {generate_tree(node.child2)})"
 
 def table_to_visual(self):
     '''
