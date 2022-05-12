@@ -1,6 +1,5 @@
 import nltk
 from nltk.tokenize import word_tokenize
-import argparse
 import CFG2CNF
 
 class Node:
@@ -22,7 +21,7 @@ class Parser:
         #print(self.pos)
         self.sen_len = len(self.cut_text)
         self.parse_table=[[[] for j in range(self.sen_len)] for i in range(self.sen_len)]
-        self.parse_dict=CFG2CNF.getCNF("grammar.txt")
+        self.parse_dict=CFG2CNF.getCNF("exam_grammar.txt")
         #print(self.parse_dict)
 
     def parse(self):
