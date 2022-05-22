@@ -12,7 +12,7 @@ def split2dic(rlist):
             rdic[arg] = []
         for i in content:
             tmp = i.split()
-            rdic[arg].append(tmp)
+            rdic[arg].append((tmp[0:-1],float(tmp[-1])))
 
 
 def isend(arg):
@@ -30,25 +30,25 @@ def getCNF(readFile):
     edic = {}
     global cnt
     cnt = 0
-    rdic["S0"] = [["S"]]
+    rdic["S0"] = [(["S"],1.0)]
     dlist = []
 
     for arg in rdic.keys():
         for con in rdic[arg]:
-            if con == [] and len(rdic[arg]) == 1:
+            if con[0] == [] and len(rdic[arg]) == 1:
                 for narg in rdic.keys():
                     for ncon in rdic[narg]:
-                        while arg in ncon:
+                        while arg in ncon[0]:
                             rdic[narg].remove(ncon)
-                        if arg in ncon:
-                            ncon.remove(arg)
+                        if arg in ncon[0]:
+                            ncon[0].remove(arg)
                             rdic[narg].append(ncon)
                 rdic[arg].remove(con)
-            elif con == []:
+            elif con[0] == []:
                 for narg in rdic.keys():
                     for ncon in rdic[narg]:
-                        if arg in ncon:
-                            ncon.remove(arg)
+                        if arg in ncon[0]:
+                            ncon[0].remove(arg)
                             rdic[narg].append(ncon)
                 rdic[arg].remove(con)
         if len(rdic[arg]) == 0:
@@ -60,10 +60,10 @@ def getCNF(readFile):
     for arg in rdic.keys():
         dcon = []
         for con in rdic[arg]:
-            if len(con) == 1 and not isend(con[0]):
+            if len(con[0]) == 1 and not isend(con[0][0]):
                 if not arg in edic:
                     edic[arg] = []
-                edic[arg].append(con[0])
+                edic[arg].append(con)
                 dcon.append(con)
         for con in dcon:
             rdic[arg].remove(con)
@@ -73,16 +73,17 @@ def getCNF(readFile):
     for arg in rdic.keys():
         dcon = []
         for con in rdic[arg]:
-            if len(con) > 2:
+            tmp=con[0]
+            if len(tmp) > 2:
                 dcon.append(con)
-                while len(con) > 2:
+                while len(tmp) > 2:
                     narg = f"tmp{cnt}"
                     cnt = cnt+1
-                    ncon = con[-2:]
-                    adic[narg] = [ncon]
-                    con = con[0:-2]+[narg]
+                    ncon = tmp[-2:]
+                    adic[narg] = [(ncon,1.0)]
+                    tmp = tmp[0:-2]+[narg]
                 else:
-                    rdic[arg].append(con)
+                    rdic[arg].append((tmp,con[1]))
         for con in dcon:
             rdic[arg].remove(con)
 
@@ -100,23 +101,26 @@ def getCNF(readFile):
         for con in rdic[arg]:
             res = f"{arg} -> "
             index = ""
-            for item in con:
-                res = res+f"{item} "
+            for item in con[0]:
+                res = res + f"{item} "
                 index = index + item + " "
             index = index.strip()
+            res = res + f"{con[1]}"
             print(res, file=wFile)
             if index in tdic.keys():
-                tdic[index].append(arg)
+                tdic[index].append((arg,con[1]))
             else:
-                tdic[index]=[arg]
-
+                tdic[index]=[(arg,con[1])]
     return tdic
 
 
 def equal(arg):
     flag[arg] = 1
     for narg in edic[arg]:
-        if arg in rdic.keys() and narg in rdic.keys():
-            if narg in edic.keys() and not narg in flag.keys():
-                equal(narg)
-            rdic[arg] = rdic[arg]+rdic[narg]
+        tmpt = narg[0][0]
+        if arg in rdic.keys() and tmpt in rdic.keys():
+            if tmpt in edic.keys() and not tmpt in flag.keys():
+                equal(tmpt)
+            for con in rdic[tmpt] :
+                tmp=con[0]
+                rdic[arg].append((tmp,con[1]*narg[1]))
