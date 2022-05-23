@@ -1,7 +1,16 @@
+import nltk
+
+#nltk.download('tagsets')
 
 rdic = {}
 flag = {}
 
+endtype=[
+    "$","''","(",")",",","--",".",":","CC","CD","DT","EX","FW",
+    "IN","JJ","JJR","JJS","LS","MD","NN","NNP","NNPS","NNS","PDT",
+    "POS","PRP","PRP$","RB","RBR","RBS","RP","SYM","TO","UH","VB",
+    "VBD","VBG","VBN","VBP","VBZ","WDT","WP","WP$","WRB","``"
+]
 
 def split2dic(rlist):
     for item in rlist:
@@ -17,7 +26,7 @@ def split2dic(rlist):
 
 def isend(arg):
     tmp = arg.strip()
-    if tmp[0] == "'" and tmp[len(tmp)-1] == "'":
+    if tmp in endtype:
         return True
     return False
 
