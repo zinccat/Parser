@@ -32,6 +32,8 @@ def isend(arg):
 
 
 def getCNF(readFile):
+    global wFile 
+    wFile = open("new_grammar.txt", "w")
     rFile = open(readFile, "r")
     rlist = rFile.read().splitlines()
     split2dic(rlist)
@@ -99,12 +101,12 @@ def getCNF(readFile):
     for arg in adic.keys():
         rdic[arg] = adic[arg]
 
+
     for arg in edic.keys():
         if not arg in flag.keys():
             equal(arg)
 
     tdic={}
-    wFile = open("new_grammar.txt", "w")
 
     for arg in rdic.keys():
         for con in rdic[arg]:
@@ -127,6 +129,8 @@ def equal(arg):
     flag[arg] = 1
     for narg in edic[arg]:
         tmpt = narg[0][0]
+        if tmpt == arg:
+            continue
         if arg in rdic.keys() and tmpt in rdic.keys():
             if tmpt in edic.keys() and not tmpt in flag.keys():
                 equal(tmpt)
