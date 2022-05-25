@@ -1,6 +1,8 @@
 import nltk
 from nltk.tokenize import word_tokenize
+from nltk import pos_tag
 import CFG2CNF
+import utils
 
 class Node:
 
@@ -17,19 +19,26 @@ class Parser:
             sentence=s_f.readline()
         self.cut_text=word_tokenize(sentence)
         self.posed_text=nltk.pos_tag(self.cut_text)
-        self.pos=[x[1] for x in self.posed_text]
+        self.cut_text,self.pos=utils.text_to_pos(sentence)
         #print(self.pos)
         self.sen_len = len(self.cut_text)
         self.parse_table=[[[] for j in range(self.sen_len)] for i in range(self.sen_len)]
-        self.parse_dict=CFG2CNF.getCNF("exam_grammar.txt")
+        self.parse_dict=CFG2CNF.getCNF("grammar_nonlexical.txt",prob=0)
         #print(self.parse_dict)
 
     def parse(self):
-        for j,word in enumerate(self.cut_text):
+        '''
+        fill in the self.parse_table
+        input: None
+        output: None
+        '''
+        for j,word in enumerate(self.pos):
             for head in self.parse_dict.keys():
-                if head=='\''+word+'\'':
+                if head == word:
+                    #print(head)
                     for item in self.parse_dict[head]:
-                        self.parse_table[j][j].append(Node(item, word, None))
+                        self.parse_table[j][j].append(Node(item[0], word, None))
+            #print(word)
             for i in range(j-1,-1,-1):
                 for k in range(i,j):
                     tmp_child_1 = self.parse_table[i][k]
@@ -40,9 +49,7 @@ class Parser:
                             #print(i,j,tmp)
                             if tmp in self.parse_dict:
                                 list1 = self.parse_dict[tmp]
-                                self.parse_table[i][j].extend([Node(thead, item1, item2) for thead in list1])
-                                #for my in self.parse_table[i][j]:
-                                    #my.nprint()
+                                self.parse_table[i][j].extend([Node(thead[0], item1, item2) for thead in list1])
 
     def print_tree(self):
         start_symbol='S'
