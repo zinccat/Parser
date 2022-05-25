@@ -12,7 +12,7 @@ endtype=[
     "VBD","VBG","VBN","VBP","VBZ","WDT","WP","WP$","WRB","``"
 ]
 
-def split2dic(rlist):
+def split2dic(rlist,prob):
     for item in rlist:
         tmp = item.split("->")
         arg = tmp[0].strip()
@@ -21,7 +21,10 @@ def split2dic(rlist):
             rdic[arg] = []
         for i in content:
             tmp = i.split()
-            rdic[arg].append((tmp[0:-1],float(tmp[-1])))
+            if prob == 1 :
+                rdic[arg].append((tmp[0:-1],float(tmp[-1])))
+            else :
+                rdic[arg].append((tmp,0))
 
 
 def isend(arg):
@@ -31,12 +34,12 @@ def isend(arg):
     return False
 
 
-def getCNF(readFile):
+def getCNF(readFile,prob=1):
     global wFile 
     wFile = open("new_grammar.txt", "w")
     rFile = open(readFile, "r")
     rlist = rFile.read().splitlines()
-    split2dic(rlist)
+    split2dic(rlist,prob)
     global edic
     edic = {}
     global cnt
