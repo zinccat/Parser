@@ -1,19 +1,29 @@
 import nltk
+import spacy
 
-def text_to_pos(text):
+def text_to_pos(text, use_spacy=True):
     """
     Convert text to POS tags.
     input: text
     output: split: list of splitted text, tags: list of POS tags
     """
-    lower_case = text.lower()
-    tokens = nltk.word_tokenize(lower_case)
-    split, tags = [], []
-    postags = nltk.pos_tag(tokens)
-    for w, tag in postags:
-        split.append(w)
-        tags.append(tag)
+    if use_spacy:
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp("I love you")
+        split = [t.text for t in doc]
+        tags = [t.tag_ for t in doc]
+    else:
+        lower_case = text.lower()
+        tokens = nltk.word_tokenize(lower_case)
+        split, tags = [], []
+        postags = nltk.pos_tag(tokens)
+        for w, tag in postags:
+            split.append(w)
+            tags.append(tag)
     return split, tags
+    
+
+    
 
 def grammar_generation(save_path, non_lexical=True):
     """
@@ -46,5 +56,6 @@ def grammar_generation(save_path, non_lexical=True):
             f.write(w+' -> '+' | '.join(compressed[w])+'\n')
 
 if __name__ == '__main__':
-    text = 'Colorless green ideas sleep furiously.'
+    # text = 'Colorless green ideas sleep furiously.'
+    text = "I love you"
     print(text_to_pos(text))
