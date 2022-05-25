@@ -1,6 +1,5 @@
 import nltk
 from nltk.tokenize import word_tokenize
-from nltk import pos_tag
 import CFG2CNF
 import utils
 
@@ -23,7 +22,7 @@ class Parser:
         #print(self.pos)
         self.sen_len = len(self.cut_text)
         self.parse_table=[[[] for j in range(self.sen_len)] for i in range(self.sen_len)]
-        self.parse_dict=CFG2CNF.getCNF("grammar_nonlexical.txt",prob=0)
+        self.parse_dict=CFG2CNF.getCNF("grammar_penn_nonlexical_prob_compressed.txt",prob=0)
         #print(self.parse_dict)
 
     def parse(self):
