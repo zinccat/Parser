@@ -9,7 +9,7 @@ def text_to_pos(text, use_spacy=True):
     """
     if use_spacy:
         nlp = spacy.load("en_core_web_sm")
-        doc = nlp("I love you")
+        doc = nlp(text)
         split = [t.text for t in doc]
         tags = [t.tag_ for t in doc]
     else:
@@ -56,6 +56,6 @@ def grammar_generation(save_path, non_lexical=True):
             f.write(w+' -> '+' | '.join(compressed[w])+'\n')
 
 if __name__ == '__main__':
-    # text = 'Colorless green ideas sleep furiously.'
-    text = "I love you"
+    text = 'Colorless green ideas sleep furiously.'
+    # text = "I love you"
     print(text_to_pos(text))
