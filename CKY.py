@@ -23,8 +23,8 @@ class Parser:
         #print(self.pos)
         self.sen_len = len(self.cut_text)
         self.parse_table=[[[] for j in range(self.sen_len)] for i in range(self.sen_len)]
-        self.parse_dict=CFG2CNF.getCNF("./grammars/grammar_penn_nonlexical_compressed.txt",prob=1)
-        print(self.parse_dict)
+        self.parse_dict=CFG2CNF.getCNF("./grammars/grammar_penn_nonlexical_prob_compressed.txt",prob=1)
+        #print(self.parse_dict)
 
     def parse(self):
         '''
@@ -51,6 +51,12 @@ class Parser:
                             if tmp in self.parse_dict:
                                 list1 = self.parse_dict[tmp]
                                 self.parse_table[i][j].extend([Node(thead[0], item1, item2,thead[1]*item1.pro*item2.pro) for thead in list1])
+                for tnode in self.parse_table[i][j]:
+                    for head in self.parse_dict.keys():
+                        if head == tnode.parent:
+                            # print(head)
+                            for item in self.parse_dict[head]:
+                                self.parse_table[i][j].append(Node(item[0], tnode.parent, None, item[1]*tnode.pro))
 
     def print_tree(self):
         start_symbol='S'
@@ -73,14 +79,19 @@ class Parser:
             print("No suitable parsing!")
 
 def generate_tree(node):
-    if node.child_2!=None:
-        print('[',node.parent," ",end="")
-        generate_tree(node.child_1)
-        print(' ',end="")
-        generate_tree(node.child_2)
-        print(']',end="")
+    if isinstance(node,Node):
+        if node.child_2 != None:
+            print('[', node.parent, " ", end="")
+            generate_tree(node.child_1)
+            print(' ', end="")
+            generate_tree(node.child_2)
+            print(']', end="")
+        else:
+            print('[', node.parent, " ", end="")
+            generate_tree(node.child_1)
+            print(']', end="")
     else:
-        print('[',node.parent, " \'",node.child_1,'\']',end="")
+        print('\'',node,'\'',end="")
 
 if __name__ == '__main__':
     CKY=Parser("./test/sentence.txt")
