@@ -6,11 +6,11 @@ import utils
 
 class Node:
 
-    def __init__(self,parent,child_1,child_2):
-        self.parent,self.child_1,self.child_2=parent,child_1,child_2
+    def __init__(self,parent,child_1,child_2,probability):
+        self.parent,self.child_1,self.child_2,self.pro=parent,child_1,child_2,probability
 
     def nprint(self):
-        print(self.parent,self.child_1,self.child_2)
+        print(self.parent,self.child_1,self.child_2,self.pro)
 
 class Parser:
 
@@ -20,11 +20,11 @@ class Parser:
         self.cut_text=word_tokenize(sentence)
         self.posed_text=nltk.pos_tag(self.cut_text)
         self.cut_text,self.pos=utils.text_to_pos(sentence)
-        print(self.pos)
+        #print(self.pos)
         self.sen_len = len(self.cut_text)
         self.parse_table=[[[] for j in range(self.sen_len)] for i in range(self.sen_len)]
-        self.parse_dict=CFG2CNF.getCNF("./grammars/grammar_penn_nonlexical_compressed.txt",prob=0)
-        #print(self.parse_dict)
+        self.parse_dict=CFG2CNF.getCNF("./grammars/grammar_penn_nonlexical_compressed.txt",prob=1)
+        print(self.parse_dict)
 
     def parse(self):
         '''
@@ -38,7 +38,7 @@ class Parser:
                 if head == word:
                     #print(head)
                     for item in self.parse_dict[head]:
-                        self.parse_table[j][j].append(Node(item[0], word, None))
+                        self.parse_table[j][j].append(Node(item[0], word, None,item[1]))
             #print(word)
             for i in range(j-1,-1,-1):
                 for k in range(i,j):
@@ -50,7 +50,7 @@ class Parser:
                             #print(i,j,tmp)
                             if tmp in self.parse_dict:
                                 list1 = self.parse_dict[tmp]
-                                self.parse_table[i][j].extend([Node(thead[0], item1, item2) for thead in list1])
+                                self.parse_table[i][j].extend([Node(thead[0], item1, item2,thead[1]*item1.pro*item2.pro) for thead in list1])
 
     def print_tree(self):
         start_symbol='S'
@@ -58,9 +58,17 @@ class Parser:
         print(len(top_nodes))
         if top_nodes:
             print("Possible parses:")
+            nmax=0
+            max_node=None
             for top_node in top_nodes:
                 generate_tree(top_node)
-                print("")
+                print(', pro=', top_node.pro)
+                nmax=max(nmax,top_node.pro)
+                max_node=top_node
+            print("")
+            print("The most possible parse is: ",end="")
+            generate_tree(max_node)
+            print(", and its possibility is",nmax)
         else:
             print("No suitable parsing!")
 
