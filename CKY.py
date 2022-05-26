@@ -20,10 +20,10 @@ class Parser:
         self.cut_text=word_tokenize(sentence)
         self.posed_text=nltk.pos_tag(self.cut_text)
         self.cut_text,self.pos=utils.text_to_pos(sentence)
-        #print(self.pos)
+        print(self.pos)
         self.sen_len = len(self.cut_text)
         self.parse_table=[[[] for j in range(self.sen_len)] for i in range(self.sen_len)]
-        self.parse_dict=CFG2CNF.getCNF("grammar_penn_nonlexical_compressed.txt",prob=0)
+        self.parse_dict=CFG2CNF.getCNF("./grammars/grammar_penn_nonlexical_compressed.txt",prob=0)
         #print(self.parse_dict)
 
     def parse(self):
@@ -75,6 +75,6 @@ def generate_tree(node):
         print('[',node.parent, " \'",node.child_1,'\']',end="")
 
 if __name__ == '__main__':
-    CKY=Parser("sentence.txt")
+    CKY=Parser("./test/sentence.txt")
     CKY.parse()
     CKY.print_tree()
