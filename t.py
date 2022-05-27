@@ -16,13 +16,16 @@ def simplify(x):
     x = x.split(' ')
     l = []
     for w in x:
-        l.append(w.split('-')[0])
+        if w[0] == '-':
+            l.append(w)
+        else:
+            l.append(w.split('-')[0])
     return ' '.join(l)
 compressed = {}
 for w in counter.keys():
-    if w.is_nonlexical():
-        lhs, rhs = str(w).split(' -> ')
     # if w.is_nonlexical():
+    lhs, rhs = str(w).split(' -> ')
+    if w.is_nonlexical():
         lhs = simplify(lhs)
         rhs = simplify(rhs)
     if lhs not in compressed:
@@ -44,7 +47,7 @@ for v in compressed.keys():
     # compressed[v].sort(key=lambda y: -y[1])
 
 
-with open("./grammars/grammar_penn_nonlexical_simplified_prob_compressed.txt", 'w') as f:
+with open("./grammars/grammar_penn_full_simplified_prob_compressed.txt", 'w') as f:
     for w in sorted(compressed):
         list1 = []
         for x in compressed[w].keys():
@@ -54,4 +57,4 @@ with open("./grammars/grammar_penn_nonlexical_simplified_prob_compressed.txt", '
         for j in list1:
             list2.append(j[0]+' '+str(j[1]))
             # list2.append(j+' '+str(compressed[w][j]))
-        f.write(w+' -> '+' | '.join(list2)+'\n')
+        f.write(w+' -> '+' / '.join(list2)+'\n')
