@@ -19,7 +19,7 @@ class Parser:
 
     def __init__(self, grammar_file="./grammars/grammar_penn_nonlexical_simplified_prob_compressed.txt"): 
         self.parse_dict = CFG2CNF.getCNF(grammar_file, prob=True)
-        # print(self.parse_dict)
+        print(self.parse_dict)
 
     def parse(self, sentence):
         '''
@@ -100,10 +100,11 @@ def generate_tree(node):
 if __name__ == '__main__':
     from time import time
     a = time()
+    # CKY = Parser("./grammars/grammar_penn_nonlexical_prob_compressed.txt")
     CKY = Parser()
     b = time()
     print("time:", b-a)
-    CKY.parse("i love you")
+    CKY.parse("The dog is running")
     c = time()
     print("time:", c-b)
     CKY.print_tree()

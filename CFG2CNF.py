@@ -24,7 +24,10 @@ def split2dic(rlist, prob):
         for i in content:
             tmp = i.split()
             if prob:
-                rdic[arg].append((tmp[0:-1], float(tmp[-1])))
+                try:
+                    rdic[arg].append((tmp[0:-1], float(tmp[-1])))
+                except:
+                    print(i, arg)
             else:
                 rdic[arg].append((tmp, 0))
 
