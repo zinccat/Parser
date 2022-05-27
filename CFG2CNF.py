@@ -1,7 +1,3 @@
-import nltk
-
-# nltk.download('tagsets')
-
 rdic = {}
 flag = {}
 tmpdic = {}
@@ -18,16 +14,13 @@ def split2dic(rlist, prob):
     for idx, item in enumerate(rlist):
         tmp = item.split("->")
         arg = tmp[0].strip()
-        content = tmp[1].split("|")
+        content = tmp[1].split("/")
         if not arg in rdic.keys():
             rdic[arg] = []
         for i in content:
             tmp = i.split()
             if prob:
-                try:
-                    rdic[arg].append((tmp[0:-1], float(tmp[-1])))
-                except:
-                    print(i, arg)
+                rdic[arg].append((tmp[0:-1], float(tmp[-1])))
             else:
                 rdic[arg].append((tmp, 0))
 
@@ -47,7 +40,6 @@ def getCNF(readFile, prob=True,unique=True):
     global edic
     global cnt
 
-    wFile = open("new_grammar.txt", "w")
     rFile = open(readFile, "r")
 
     rlist = rFile.read().splitlines()
@@ -129,16 +121,20 @@ def getCNF(readFile, prob=True,unique=True):
 
     for arg in rdic.keys():
         for con in rdic[arg]:
-            res = f"{arg} -> "
             index = ""
             for item in con[0]:
-                res = res + f"{item} "
                 index = index + item + " "
             index = index.strip()
-            res = res + f"{con[1]}"
-            print(res, file=wFile)
             if index in tdic.keys():
-                tdic[index].append((arg, con[1]))
+                tflag = True
+                for (x,y) in tdic[index]:
+                    if x == arg :
+                        tdic[index].remove((x,y))
+                        tdic[index].append((x,y+con[1]))
+                        tflag=False
+                        break
+                if tflag :
+                    tdic[index].append((arg, con[1]))
             else:
                 tdic[index] = [(arg, con[1])]
     return tdic
@@ -158,4 +154,8 @@ def equal(arg):
                 rdic[arg].append((tmp, con[1]*narg[1]))
 
 if __name__ == '__main__':
-    print(getCNF('grammar.txt'))
+    wfile=open('tmpout.txt',"w")
+    tmdic = getCNF('grammar.txt')
+    for i in tmdic:
+        print(f"{i}:\n{tmdic[i]}",file=wfile)
+    wfile.close()
