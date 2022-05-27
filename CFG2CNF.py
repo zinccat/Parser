@@ -4,6 +4,7 @@ import nltk
 
 rdic = {}
 flag = {}
+tmpdic = {}
 
 endtype = [
     "$", "''", "(", ")", ",", "--", ".", ":", "CC", "CD", "DT", "EX", "FW",
@@ -32,8 +33,13 @@ def isend(arg):
     tmp = arg.strip()
     return tmp in endtype
 
+def toStr(tmp):
+    strans=""
+    for i in tmp:
+        strans=strans+i
+    return strans
 
-def getCNF(readFile, prob=True):
+def getCNF(readFile, prob=True,unique=True):
     global wFile
     global edic
     global cnt
@@ -91,12 +97,19 @@ def getCNF(readFile, prob=True):
             tmp = con[0]
             if len(tmp) > 2:
                 dcon.append(con)
+                tmpstr = ""
                 while len(tmp) > 2:
+                    ncon = tmp[-2:]
+                    tmpstr=toStr(ncon)
+                    if tmpstr in tmpdic.keys() and unique:
+                        narg = tmpdic[tmpstr]
+                        tmp = tmp[0:-2]+[narg]
+                        continue
                     narg = f"tmp{cnt}"
                     cnt = cnt+1
-                    ncon = tmp[-2:]
+                    tmpdic[tmpstr] = narg
                     adic[narg] = [(ncon, 1.0)]
-                    tmp = tmp[0:-2]+[narg]
+                    tmp = tmp[0:-2] + [narg]
                 else:
                     rdic[arg].append((tmp, con[1]))
         for con in dcon:
@@ -140,3 +153,6 @@ def equal(arg):
             for con in rdic[tmpt]:
                 tmp = con[0]
                 rdic[arg].append((tmp, con[1]*narg[1]))
+
+if __name__ == '__main__':
+    print(getCNF('grammar.txt'))
