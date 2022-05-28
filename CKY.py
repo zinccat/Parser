@@ -33,9 +33,12 @@ class Parser:
         self.parse_table = [
             [[] for j in range(self.sen_len)] for i in range(self.sen_len)]
 
-        for j, word in enumerate(self.pos):
+        for j,word in enumerate(self.pos):
+            self.parse_table[j][j].append(Node(word,None,None,1.0))
+            print(word)
             for head in self.parse_dict.keys():
                 if head == word:
+                    # print(head)
                     for item in self.parse_dict[head]:
                         self.parse_table[j][j].append(Node(item[0], word, None, item[1]))
             # print(word)
@@ -81,19 +84,21 @@ class Parser:
 
 
 def generate_tree(node):
-    if isinstance(node, Node):
+    if isinstance(node,Node):
         if node.child_2 != None:
             print('[', node.parent, " ", end="")
             generate_tree(node.child_1)
             print(' ', end="")
             generate_tree(node.child_2)
             print(']', end="")
-        else:
+        elif node.child_1!=None:
             print('[', node.parent, " ", end="")
             generate_tree(node.child_1)
             print(']', end="")
+        else:
+            print('[', node.parent, "]", end="")
     else:
-        print('\'', node, '\'', end="")
+        print('\'',node,'\'',end="")
 
 
 if __name__ == '__main__':
