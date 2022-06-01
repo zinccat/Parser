@@ -34,11 +34,9 @@ class Parser:
 
         for j,word in enumerate(self.pos):
             self.parse_table[j][j].append(Node(word,None,None,1.0))
-            for head in self.parse_dict.keys():
-                if head == word:
-                    # print(head)
-                    for item in self.parse_dict[head]:
-                        self.parse_table[j][j].append(Node(item[0], word, None, item[1]))
+            if word in self.parse_dict:
+                for item in self.parse_dict[word]:
+                    self.parse_table[j][j].append(Node(item[0], word, None, item[1]))
             # print(word)
             for i in range(j-1, -1, -1):
                 for k in range(i, j):
@@ -56,11 +54,6 @@ class Parser:
                                 # exit(0)
                                 # self.parse_table[i][j].extend(
                                     # [Node(thead[0], item1, item2, thead[1]*item1.pro*item2.pro) for thead in list1])
-                for tnode in self.parse_table[i][j]:
-                    for head in self.parse_dict.keys():
-                        if head == tnode.parent:
-                            for item in self.parse_dict[head]:
-                                self.parse_table[i][j].append(Node(item[0], tnode.parent, None, item[1]*tnode.pro))
 
     def print_tree(self):
         start_symbol = 'S'
