@@ -54,48 +54,38 @@ class Parser:
                                 # exit(0)
                                 # self.parse_table[i][j].extend(
                                     # [Node(thead[0], item1, item2, thead[1]*item1.pro*item2.pro) for thead in list1])
-
-    def print_tree(self):
+    
+    def table_to_visual(self):
+        '''
+        input:原代码中的self.grammer和self.parse_table
+        output:多种形式的可视化句法树
+        '''
         start_symbol = 'S'
-        top_nodes = [n for n in self.parse_table[0]
-                     [self.sen_len-1] if n.parent == start_symbol]
-        if self.full_output:
-            print("Number of possible parses:", len(top_nodes))
-        if top_nodes:
-            if self.full_output:
-                print("Possible parses:")
-            nmax = 0
-            max_node = None
-            for top_node in top_nodes:
-                if self.full_output:
-                    generate_tree(top_node)
-                    print(', with probability', top_node.pro)
-                nmax = max(nmax, top_node.pro)
-                max_node = top_node
-            print("The most possible parse for '{}' is: ".format(self.sentence), end="")
-            generate_tree(max_node)
-            print(", and its possibility is", nmax)
-        else:
-            print("No suitable parsing!")
-
+        # final_nodes is the the cell in the upper right hand corner of the parse_table
+        # we choose the node whose parent is the start_symbol
+        final_nodes = [n for n in self.parse_table[0][-1] if n.parent == start_symbol]
+        if final_nodes:
+            print("Possible parses:")
+            nmax=0
+            max_node=None
+            for top_node in final_nodes:
+                if nmax<top_node.pro:
+                    nmax = max(nmax, top_node.pro)
+                    max_node = top_node
+            write_trees = [generate_tree(node) for node in final_nodes]
+            for x in write_trees:
+                print(x)
+            write_tree = generate_tree(max_node)
+            print(write_tree)
+            Tree.fromstring(write_tree).draw()
 
 def generate_tree(node):
-    if isinstance(node,Node):
-        if node.child_2 != None:
-            print('[', node.parent, " ", end="")
-            generate_tree(node.child_1)
-            print(' ', end="")
-            generate_tree(node.child_2)
-            print(']', end="")
-        elif node.child_1!=None:
-            print('[', node.parent, " ", end="")
-            generate_tree(node.child_1)
-            print(']', end="")
-        else:
-            print('[', node.parent, "]", end="")
-    else:
-        print('\'',node,'\'',end="")
-
+    """
+    input:parse_table中的node
+    """
+    if node.child_2 is None:
+        return f"({node.parent} '{node.child_1}')"
+    return f"({node.parent} {generate_tree(node.child_1)} {generate_tree(node.child_2)})"
 
 if __name__ == '__main__':
     # CKY = Parser("./grammars/grammar_penn_nonlexical_prob_compressed.txt")
@@ -103,4 +93,4 @@ if __name__ == '__main__':
     CKY.parse("Colorless green ideas sleep furiously")
     # CKY.parse("The cat is on the mat")
     # CKY.parse("I like to eat")
-    CKY.print_tree()
+    CKY.table_to_visual()
