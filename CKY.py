@@ -33,10 +33,10 @@ class Parser:
             [[] for j in range(self.sen_len)] for i in range(self.sen_len)]
 
         for j,word in enumerate(self.pos):
-            self.parse_table[j][j].append(Node(word,self.cut_text[j],None,1.0))
+            #print(j,word)
             if word in self.parse_dict:
                 for item in self.parse_dict[word]:
-                    self.parse_table[j][j].append(Node(item[0], word, None, item[1]))
+                    self.parse_table[j][j].append(Node(item[0], self.cut_text[j],None, item[1]))
             # print(word)
             for i in range(j-1, -1, -1):
                 for k in range(i, j):
